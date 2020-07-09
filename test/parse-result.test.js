@@ -4,8 +4,8 @@ const makeHook = require('../lib/parse-result')
 const parseResult = makeHook({ fields: ['title', 'description'] })
 const parseNestedResult = makeHook({ fields: ['nest.title'] })
 
-describe('Result', function() {
-  it('transforms the result as object', function() {
+describe('Result', function () {
+  it('transforms the result as object', function () {
     const context = {
       type: 'after',
       result: {
@@ -27,7 +27,7 @@ describe('Result', function() {
     assert.strictEqual(result.date, 'a date', 'date has not been modified')
   })
 
-  it('transforms the empty string', function() {
+  it('transforms the empty string', function () {
     const context = {
       type: 'after',
       result: {
@@ -54,7 +54,7 @@ describe('Result', function() {
     )
   })
 
-  it('ignores already transformed result', function() {
+  it('ignores already transformed result', function () {
     const context = {
       type: 'after',
       result: {
@@ -74,7 +74,7 @@ describe('Result', function() {
     assert.strictEqual(result.date, 'a date', 'date has not been modified')
   })
 
-  it('transforms the result as array (not-paginated)', function() {
+  it('transforms the result as array (not-paginated)', function () {
     const context = {
       type: 'after',
       result: [
@@ -120,7 +120,7 @@ describe('Result', function() {
     assert.strictEqual(result[1].date, 'a date', 'date has not been modified')
   })
 
-  it('transforms the result as array (paginated)', function() {
+  it('transforms the result as array (paginated)', function () {
     const context = {
       type: 'after',
       result: {
@@ -176,7 +176,7 @@ describe('Result', function() {
     )
   })
 
-  it('can change language (fallback to en)', function() {
+  it('can change language (fallback to en)', function () {
     const context = {
       type: 'after',
       result: {
@@ -231,7 +231,7 @@ describe('Result', function() {
     )
   })
 
-  it('transforms a nested object', function() {
+  it('transforms a nested object', function () {
     const context = {
       type: 'after',
       result: {
@@ -255,7 +255,7 @@ describe('Result', function() {
     assert.strictEqual(result.date, 'a date', 'date has not been modified')
   })
 
-  it('transforms an array of nested objects', function() {
+  it('transforms an array of nested objects', function () {
     const context = {
       type: 'after',
       result: {
@@ -296,7 +296,7 @@ describe('Result', function() {
     )
   })
 
-  it('transforms an array of deep nested objects', function() {
+  it('transforms an array of deep nested objects', function () {
     const context = {
       type: 'after',
       result: {
@@ -329,6 +329,36 @@ describe('Result', function() {
     )
     assert.strictEqual(
       result.nest.deepNest[1].title,
+      'another title',
+      'we have converted the title'
+    )
+  })
+
+  it('transforms a top level array of international strings', function () {
+    const context = {
+      type: 'after',
+      result: {
+        strings: [
+          {
+            en: 'a huge title'
+          },
+          {
+            en: 'another title'
+          }
+        ]
+      }
+    }
+
+    makeHook({ fields: ['strings'] })(context)
+    const { result } = context
+
+    assert.strictEqual(
+      result.strings[0],
+      'a huge title',
+      'we have converted the title'
+    )
+    assert.strictEqual(
+      result.strings[1],
       'another title',
       'we have converted the title'
     )
