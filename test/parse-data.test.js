@@ -102,4 +102,32 @@ describe('Data', function () {
       done(error)
     }
   })
+
+  it('Keeps top level array ', function (done) {
+    const context = {
+      type: 'before',
+      method: 'create',
+      data:
+        {
+          name: 'a name',
+          tags: [
+            {
+              en: 'tag1'
+            },
+            'tag2',
+            'tag3'
+          ]
+        }
+    }
+    try {
+      parseData(context)
+      const { data } = context
+
+      assert(data['tags'][0]['en'] === 'tag1')
+      assert(data['tags'][2]['en'] === 'tag3', 'we have modified a top level array in data')
+      done()
+    } catch (error) {
+      done(error)
+    }
+  })
 })
