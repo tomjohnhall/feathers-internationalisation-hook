@@ -130,4 +130,24 @@ describe('Data', function () {
       done(error)
     }
   })
+
+  it('transforms empty string', function (done) {
+    const context = {
+      type: 'before',
+      method: 'create',
+      data: {
+        name: 'a name',
+        description: ''
+      }
+    }
+    try {
+      parseData(context)
+      const { data } = context
+
+      assert(data['description']['en'] === '', 'we have a modified the data to map the language')
+      done()
+    } catch (error) {
+      done(error)
+    }
+  })
 })
