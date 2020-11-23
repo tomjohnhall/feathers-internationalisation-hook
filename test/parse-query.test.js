@@ -1,7 +1,7 @@
 const assert = require('assert')
 const makeHook = require('../lib/parse-query')
 
-const parseQuery = makeHook({ fields: ['title', 'description'] })
+const parseQuery = makeHook({ fields: ['title', 'description', 'tags'] })
 
 describe('Query', function () {
   it('transforms the query based on language', function (done) {
@@ -88,4 +88,31 @@ describe('Query', function () {
       done(error)
     }
   })
+
+  it('transforms the query with top level array', function (done) {
+    const context = {
+      type: 'before',
+      method: 'find',
+      params: {
+        query: {
+          tags: ['tag1', 'tag2'],
+          name: 'a name'
+        }
+      }
+    }
+    try {
+      parseQuery(context)
+      const { params } = context
+      const { query } = params
+
+      assert(query['tags.en'][0] === 'tag1', 'we have modified the query to map the language')
+      assert(query['tags.en'][1] === 'tag2', 'we have a modified the query to map the language')
+      assert(query.name === 'a name', 'name has not changed')
+      done()
+    } catch (error) {
+      done(error)
+    }
+  })
+
+
 })
